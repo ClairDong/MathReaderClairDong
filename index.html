@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MathReader - 数学学习助手</title>
+    <link rel="stylesheet" href="styles.css">
+    <!-- PDF.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- KaTeX for LaTeX rendering -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧目录面板 -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2><i class="fas fa-book"></i> 目录</h2>
+                <button class="toggle-sidebar" id="toggleSidebar">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+            </div>
+            <div class="search-box">
+                <input type="text" id="tocSearch" placeholder="搜索章节...">
+                <i class="fas fa-search"></i>
+            </div>
+            <div class="toc-container" id="tocContainer">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i> 加载目录中...
+                </div>
+            </div>
+            <div class="sidebar-footer">
+                <div class="progress-info">
+                    <span>学习进度: <strong id="progressCount">0</strong> / <span id="totalCount">0</span></span>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 中间PDF阅读区 -->
+        <main class="pdf-viewer" id="pdfViewer">
+            <div class="pdf-toolbar">
+                <div class="pdf-nav">
+                    <button id="prevPage" title="上一页">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span class="page-info">
+                        <input type="number" id="currentPage" value="1" min="1"> 
+                        / <span id="totalPages">0</span>
+                    </span>
+                    <button id="nextPage" title="下一页">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+                <div class="pdf-zoom">
+                    <button id="zoomOut" title="缩小">
+                        <i class="fas fa-minus"></i>
+                    </button>
+                    <span id="zoomLevel">100%</span>
+                    <button id="zoomIn" title="放大">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                    <button id="fitWidth" title="适应宽度">
+                        <i class="fas fa-arrows-alt-h"></i>
+                    </button>
+                </div>
+                <div class="pdf-actions">
+                    <button id="toggleChat" title="AI助手">
+                        <i class="fas fa-robot"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="pdf-container" id="pdfContainer">
+                <div class="pdf-loading" id="pdfLoading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>加载PDF中...</p>
+                </div>
+                <canvas id="pdfCanvas"></canvas>
+            </div>
+        </main>
+
+        <!-- 右侧AI聊天面板 -->
+        <aside class="chat-panel" id="chatPanel">
+            <div class="chat-header">
+                <h3><i class="fas fa-robot"></i> AI学习助手</h3>
+                <button class="close-chat" id="closeChat">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <!-- API Key设置 -->
+            <div class="api-settings" id="apiSettings">
+                <div class="api-key-input">
+                    <label for="apiKey">Kimi API Key:</label>
+                    <div class="input-group">
+                        <input type="password" id="apiKey" placeholder="输入你的API Key (sk-...)">
+                        <button id="toggleApiKey" title="显示/隐藏">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <button id="saveApiKey" class="btn-primary">保存</button>
+                    <a href="https://platform.moonshot.cn/console/api-keys" target="_blank" class="api-link">
+                        <i class="fas fa-external-link-alt"></i> 获取Kimi API Key
+                    </a>
+                </div>
+            </div>
+
+            <!-- 当前选中对象 -->
+            <div class="selected-object" id="selectedObject">
+                <div class="object-header">
+                    <span class="object-type" id="objectType">未选择</span>
+                    <span class="object-id" id="objectId"></span>
+                    <button class="mark-learned" id="markLearned" title="标记为已学习">
+                        <i class="far fa-check-circle"></i>
+                    </button>
+                </div>
+                <div class="object-title" id="objectTitle">请从左侧目录选择一个对象</div>
+            </div>
+
+            <!-- 聊天历史 -->
+            <div class="chat-messages" id="chatMessages">
+                <div class="welcome-message">
+                    <i class="fas fa-graduation-cap"></i>
+                    <h4>欢迎使用MathReader!</h4>
+                    <p>选择左侧目录中的定义、定理或例子，然后向AI提问来帮助理解。</p>
+                    <div class="quick-prompts">
+                        <button class="quick-prompt" data-prompt="请解释这个概念">
+                            <i class="fas fa-lightbulb"></i> 解释概念
+                        </button>
+                        <button class="quick-prompt" data-prompt="能举一个具体的例子吗">
+                            <i class="fas fa-pencil-alt"></i> 举个例子
+                        </button>
+                        <button class="quick-prompt" data-prompt="这个和之前学的内容有什么联系">
+                            <i class="fas fa-link"></i> 知识联系
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 聊天输入 -->
+            <div class="chat-input-container">
+                <div class="chat-input">
+                    <textarea id="chatInput" placeholder="输入你的问题..." rows="1"></textarea>
+                    <button id="sendMessage" title="发送">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <!-- 对象详情弹窗 -->
+    <div class="modal" id="objectModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalTitle"></h3>
+                <button class="modal-close" id="modalClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+            <div class="modal-footer">
+                <button id="modalAskAI" class="btn-primary">
+                    <i class="fas fa-robot"></i> 向AI提问
+                </button>
+                <button id="modalGoToPage" class="btn-secondary">
+                    <i class="fas fa-arrow-right"></i> 跳转到此页
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast通知 -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>
