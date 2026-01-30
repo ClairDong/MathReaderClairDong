@@ -1,0 +1,20 @@
+# 设置默认行为，自动处理文本文件
+* text=auto
+
+# 明确声明需要文本的文件
+*.js text eol=lf charset=utf-8
+*.html text eol=lf charset=utf-8
+*.css text eol=lf charset=utf-8
+*.md text eol=lf charset=utf-8
+*.json text eol=lf charset=utf-8
+*.txt text eol=lf charset=utf-8
+*.bat text eol=crlf charset=utf-8
+*.ps1 text eol=crlf charset=utf-8
+
+# 声明始终是二进制文件的文件
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
