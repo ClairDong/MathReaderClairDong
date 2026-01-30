@@ -70,6 +70,11 @@
                     </button>
                 </div>
                 <div class="pdf-actions">
+                    <button id="uploadPdf" title="上传PDF文件">
+                        <i class="fas fa-upload"></i>
+                    </button>
+                    <input type="file" id="pdfFileInput" accept=".pdf" style="display: none;">
+                    <span id="currentPdfName" class="pdf-name" title="当前PDF文件"></span>
                     <button id="toggleChat" title="AI助手">
                         <i class="fas fa-robot"></i>
                     </button>
@@ -108,6 +113,20 @@
                         <i class="fas fa-external-link-alt"></i> 获取Kimi API Key
                     </a>
                 </div>
+                
+                <!-- 数据文件夹设置 -->
+                <div class="data-folder-settings" style="margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--border-color);">
+                    <label>数据存储位置:</label>
+                    <div class="folder-selector">
+                        <input type="text" id="dataFolderPath" readonly placeholder="未选择文件夹" style="flex: 1; padding: 8px; border: 1px solid var(--border-color); border-radius: var(--radius);">
+                        <button id="selectDataFolder" class="btn-secondary" style="margin-left: 8px;">
+                            <i class="fas fa-folder-open"></i> 选择文件夹
+                        </button>
+                    </div>
+                    <p style="font-size: 12px; color: var(--text-muted); margin-top: 8px;">
+                        <i class="fas fa-info-circle"></i> 选择程序目录下的文件夹来保存用户数据
+                    </p>
+                </div>
             </div>
 
             <!-- 当前选中对象 -->
@@ -115,11 +134,47 @@
                 <div class="object-header">
                     <span class="object-type" id="objectType">未选择</span>
                     <span class="object-id" id="objectId"></span>
-                    <button class="mark-learned" id="markLearned" title="标记为已学习">
-                        <i class="far fa-check-circle"></i>
+                    <button class="learning-status-btn" id="learningStatusBtn" title="切换学习状态">
+                        <i class="far fa-circle" id="statusIcon"></i>
+                        <span id="statusText">未学习</span>
                     </button>
                 </div>
                 <div class="object-title" id="objectTitle">请从左侧目录选择一个对象</div>
+            </div>
+
+            <!-- 对话历史操作 -->
+            <div class="chat-actions" id="chatActions" style="display: none;">
+                <button id="saveHistoryToFile" class="btn-export" title="保存对话历史到文件">
+                    <i class="fas fa-save"></i> 保存
+                </button>
+                <button id="loadHistoryFromFiles" class="btn-import" title="从文件加载对话历史">
+                    <i class="fas fa-folder-open"></i> 加载
+                </button>
+            </div>
+            
+            <!-- 对话历史文件列表弹窗 -->
+            <div class="modal" id="historyFilesModal">
+                <div class="modal-content" style="max-width: 600px;">
+                    <div class="modal-header">
+                        <h3>选择要加载的对话历史文件</h3>
+                        <button class="modal-close" id="closeHistoryFilesModal">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="historyFilesList" style="max-height: 400px; overflow-y: auto;">
+                            <!-- 文件列表将在这里动态生成 -->
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="loadSelectedHistory" class="btn-primary" disabled>
+                            <i class="fas fa-check"></i> 加载选中文件
+                        </button>
+                        <button id="cancelLoadHistory" class="btn-secondary">
+                            取消
+                        </button>
+                    </div>
+                </div>
             </div>
 
             <!-- 聊天历史 -->

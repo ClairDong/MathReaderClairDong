@@ -373,6 +373,17 @@ body {
     cursor: not-allowed;
 }
 
+.pdf-name {
+    color: white;
+    font-size: 12px;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 0 8px;
+    opacity: 0.8;
+}
+
 .page-info {
     color: white;
     font-size: 14px;
@@ -617,29 +628,105 @@ body {
     color: var(--text-muted);
 }
 
-.mark-learned {
+/* 学习状态按钮 */
+.learning-status-btn {
     margin-left: auto;
     background: none;
-    border: none;
+    border: 1px solid var(--border-color);
     cursor: pointer;
-    padding: 6px;
+    padding: 6px 12px;
     border-radius: var(--radius);
     color: var(--text-muted);
     transition: var(--transition);
-    font-size: 18px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
 }
 
-.mark-learned:hover {
+.learning-status-btn:hover {
     background: var(--bg-color);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.learning-status-btn.unlearned {
+    color: var(--text-muted);
+}
+
+.learning-status-btn.unlearned i {
+    color: var(--text-muted);
+}
+
+.learning-status-btn.learned {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.learning-status-btn.learned i {
     color: var(--success-color);
 }
 
-.mark-learned.learned {
+.learning-status-btn.mastered {
+    color: #f59e0b;
+    border-color: #f59e0b;
+}
+
+.learning-status-btn.mastered i {
+    color: #f59e0b;
+}
+
+/* 对话历史操作按钮 */
+.chat-actions {
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    gap: 8px;
+    background: var(--bg-color);
+}
+
+.btn-export,
+.btn-import {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    background: white;
+    color: var(--text-color);
+    cursor: pointer;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    transition: var(--transition);
+}
+
+.btn-export:hover {
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.btn-import:hover {
+    background: var(--success-color);
+    color: white;
+    border-color: var(--success-color);
+}
+
+/* 目录中的学习状态图标 */
+.toc-status {
+    margin-left: auto;
+    font-size: 14px;
+}
+
+.toc-status.learned {
     color: var(--success-color);
 }
 
-.mark-learned.learned i {
-    font-weight: 900;
+.toc-status.mastered {
+    color: #f59e0b;
 }
 
 .object-title {
@@ -758,6 +845,18 @@ body {
     font-size: 11px;
     color: var(--text-muted);
     margin-top: 4px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.message.imported {
+    opacity: 0.85;
+}
+
+.imported-badge {
+    color: var(--primary-color);
+    font-size: 10px;
 }
 
 .message-content pre {
@@ -940,6 +1039,81 @@ body {
     display: flex;
     gap: 12px;
     justify-content: flex-end;
+}
+
+/* 数据文件夹设置 */
+.data-folder-settings {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--border-color);
+}
+
+.folder-selector {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+}
+
+.folder-selector input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: var(--bg-color);
+}
+
+.folder-selector input:focus {
+    outline: none;
+    border-color: var(--primary-color);
+}
+
+/* 对话历史文件列表 */
+.history-file-item {
+    padding: 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    margin-bottom: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: var(--transition);
+}
+
+.history-file-item:hover {
+    background: var(--bg-color);
+    border-color: var(--primary-color);
+}
+
+.history-file-item input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    cursor: pointer;
+}
+
+.history-file-item label {
+    flex: 1;
+    cursor: pointer;
+}
+
+#historyFilesList {
+    max-height: 400px;
+    overflow-y: auto;
+    padding: 8px;
+}
+
+#historyFilesList::-webkit-scrollbar {
+    width: 6px;
+}
+
+#historyFilesList::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+#historyFilesList::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 3px;
 }
 
 /* ===== Toast通知 ===== */

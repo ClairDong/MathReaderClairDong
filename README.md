@@ -33,13 +33,23 @@
 
 由于浏览器安全限制，需要通过本地服务器运行。
 
-**方式1：Python（推荐）**
+**方式1：使用启动脚本（最简单）**
+
+- **Windows 用户**：双击 `start.bat` 文件（使用 Python）或 `start-node.bat`（使用 Node.js）
+- **PowerShell 用户**：右键点击 `start.ps1`，选择"使用 PowerShell 运行"
+
+启动脚本会自动：
+- 检查 Python/Node.js 是否安装
+- 启动本地服务器
+- 自动打开浏览器
+
+**方式2：手动启动（Python）**
 ```bash
 cd MathReader
 python -m http.server 8080
 ```
 
-**方式2：Node.js**
+**方式3：手动启动（Node.js）**
 ```bash
 npm install -g http-server
 http-server -p 8080
@@ -47,7 +57,7 @@ http-server -p 8080
 
 ### 4. 打开浏览器
 
-访问 http://localhost:8080
+如果使用启动脚本，浏览器会自动打开。否则请手动访问：http://localhost:8080
 
 ## 使用说明
 
